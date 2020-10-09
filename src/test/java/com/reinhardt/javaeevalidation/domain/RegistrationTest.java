@@ -46,10 +46,6 @@ public class RegistrationTest {
                 validator.validate( registration );
 
         assertEquals( 0, constraintViolations.size() );
-        /*assertEquals(
-                "may not be null",
-                constraintViolations.iterator().next().getMessage()
-        );*/
     }
 
     @Test
@@ -58,6 +54,10 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student ID is required to be exactly 9 numbers",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
     @Test
@@ -66,6 +66,10 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student ID is required to be exactly 9 numbers",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
     @Test
@@ -74,6 +78,10 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student ID can only contain numbers",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
     @Test
@@ -82,6 +90,10 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student ID cannot be null",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
     @Test
@@ -90,6 +102,10 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "You cannot register for less than 1 class or more than 6 classes at a time",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
     @Test
@@ -102,6 +118,10 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "You cannot register for less than 1 class or more than 6 classes at a time",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
     @Test
@@ -110,6 +130,110 @@ public class RegistrationTest {
         Set<ConstraintViolation<Registration>> constraintViolations =
                 validator.validate( registration );
         assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Classes cannot be null",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testStudentNameNull(){
+        registration.setStudentName(null);
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student name cannot be null",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testStudentNameLargerThan50Characters(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i=0;i<51;i++){
+            stringBuilder.append("a");
+        }
+        registration.setStudentName(stringBuilder.toString());
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student name cannot be greater than 50 characters",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testStudentNameSpecialCharacters(){
+        registration.setStudentName("$p3c14l");
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Student name can only contain alpha characters and spaces",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testStartDateNull(){
+        registration.setSemesterStartDate(null);
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Semester start date cannot be null",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testPreviousDate(){
+        registration.setSemesterStartDate(new Date(System.currentTimeMillis() - 100000));
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Semester start date has to be in the future",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testCurrentDate(){
+        registration.setSemesterStartDate(new Date(System.currentTimeMillis()));
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Semester start date has to be in the future",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testTotalTuitionNull(){
+        registration.setTotalTuition(null);
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Total tuition cannot be null",
+                constraintViolations.iterator().next().getMessage()
+        );
+    }
+
+    @Test
+    public void testInteger7Digits(){
+        registration.setTotalTuition(BigDecimal.valueOf(1000000.00));
+        Set<ConstraintViolation<Registration>> constraintViolations =
+                validator.validate( registration );
+        assertEquals( 1, constraintViolations.size() );
+        assertEquals(
+                "Total tuition cannot be more than 999999.99",
+                constraintViolations.iterator().next().getMessage()
+        );
     }
 
 }
